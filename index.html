@@ -255,10 +255,28 @@
             cursor: pointer;
         }
         .checkbox-item.active { border-color: var(--accent); background: #eff6ff; }
-        .checkbox-item input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-item input { display: none; }
         .checkbox-left { display: flex; align-items: center; gap: 10px; flex: 1; }
         .checkbox-label { font-size: 14px; font-weight: 500; color: var(--text); }
         .checkbox-price { font-size: 13px; color: var(--success); font-weight: 600; }
+        .checkbox-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: transparent;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .checkbox-item.active .checkbox-check {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
 
         .quantity-row {
             display: flex;
@@ -305,6 +323,30 @@
             margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
+        }
+        .price-tier {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .price-tier.active {
+            background: #eff6ff;
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .current-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
         .divider { height: 1px; background: var(--border); margin: 16px 0; }
@@ -775,29 +817,22 @@
                         <div class="checkbox-item" onclick="toggleCheckbox('smartMirror')">
                             <div class="checkbox-left">
                                 <input type="checkbox" id="smartMirror" onchange="toggleSmartOptions()">
+                                <span class="checkbox-check">✓</span>
                                 <span class="checkbox-label">启用智能镜柜</span>
                             </div>
                             <span class="checkbox-price">+150元/套</span>
                         </div>
                         <div class="sub-section" id="smartOptions" style="display: none;">
-                            <div class="sub-section-title">智能功能加价（按镜柜长度选择）</div>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    <input type="radio" name="smartPrice" id="smart-200" value="200" checked>
-                                    <label for="smart-200">1.0-1.2m<br>+200</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="smartPrice" id="smart-250" value="250">
-                                    <label for="smart-250">1.2-1.5m<br>+250</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" name="smartPrice" id="smart-300" value="300">
-                                    <label for="smart-300">1.5-2.0m<br>+300</label>
-                                </div>
-                            </div>
+                            <div class="sub-section-title">智能功能加价（按镜柜长度自动计算）</div>
+                            <div class="price-tier" id="tier-1000">≤ 1.0m（1000mm）：+120元</div>
+                            <div class="price-tier" id="tier-1200">≤ 1.2m（1200mm）：+150元</div>
+                            <div class="price-tier" id="tier-1500">≤ 1.5m（1500mm）：+200元</div>
+                            <div class="price-tier" id="tier-over">> 1.5m：+250元</div>
+                            <div class="current-price">当前镜柜 <span id="smartLenText">1.0</span>m，智能镜柜 +<span id="smartPriceText">120</span>元</div>
                             <div class="checkbox-item" style="margin-top: 12px;" onclick="toggleCheckbox('smartSwitch')">
                                 <div class="checkbox-left">
                                     <input type="checkbox" id="smartSwitch">
+                                    <span class="checkbox-check">✓</span>
                                     <span class="checkbox-label">加套开关</span>
                                 </div>
                                 <span class="checkbox-price">+100元</span>
@@ -826,6 +861,7 @@
                         <div class="checkbox-item" onclick="toggleCheckbox('layerLight')">
                             <div class="checkbox-left">
                                 <input type="checkbox" id="layerLight">
+                                <span class="checkbox-check">✓</span>
                                 <span class="checkbox-label">层板灯</span>
                             </div>
                             <span class="checkbox-price">+20元</span>
@@ -873,6 +909,7 @@
                         <div class="checkbox-item" onclick="toggleCheckbox('foldMirror')">
                             <div class="checkbox-left">
                                 <input type="checkbox" id="foldMirror">
+                                <span class="checkbox-check">✓</span>
                                 <span class="checkbox-label">推拉/折叠风水镜</span>
                             </div>
                             <span class="checkbox-price">+120元</span>
@@ -916,6 +953,7 @@
                         <div class="checkbox-item" onclick="toggleCheckbox('smartMirrorFrame')">
                             <div class="checkbox-left">
                                 <input type="checkbox" id="smartMirrorFrame">
+                                <span class="checkbox-check">✓</span>
                                 <span class="checkbox-label">智能镜片加框</span>
                             </div>
                             <span class="checkbox-price">+100元</span>
@@ -1043,6 +1081,14 @@
             return names[key] || key;
         }
 
+        function getSmartMirrorPrice(lengthM) {
+            const mm = lengthM * 1000;
+            if (mm <= 1000) return 120;
+            if (mm <= 1200) return 150;
+            if (mm <= 1500) return 200;
+            return 250;
+        }
+
         function getFormData() {
             return {
                 customerName: document.getElementById('customerName').value,
@@ -1056,7 +1102,6 @@
                 cabinetDepth: parseFloat(document.getElementById('cabinetDepth').value) || 50,
                 cabinetHeight: parseFloat(document.getElementById('cabinetHeight').value) || 50,
                 smartMirror: document.getElementById('smartMirror').checked,
-                smartPrice: parseInt(document.querySelector('input[name="smartPrice"]:checked').value),
                 smartSwitch: document.getElementById('smartSwitch').checked,
                 lightSlot: parseFloat(document.getElementById('lightSlot').value) || 0,
                 layerLight: document.getElementById('layerLight').checked,
@@ -1083,7 +1128,6 @@
             document.getElementById('cabinetHeight').value = data.cabinetHeight || 50;
             document.getElementById('smartMirror').checked = data.smartMirror || false;
             document.getElementById('smartOptions').style.display = data.smartMirror ? 'block' : 'none';
-            document.querySelector(`input[name="smartPrice"][value="${data.smartPrice || 200}"]`).checked = true;
             document.getElementById('smartSwitch').checked = data.smartSwitch || false;
             document.getElementById('lightSlot').value = data.lightSlot || 0;
             document.getElementById('layerLight').checked = data.layerLight || false;
@@ -1135,9 +1179,9 @@
             if (document.getElementById('smartMirror').checked) {
                 total += 150;
                 details.push({ name: '智能镜柜基础费', price: 150 });
-                const sp = parseInt(document.querySelector('input[name="smartPrice"]:checked').value);
+                const sp = getSmartMirrorPrice(mirrorLength);
                 total += sp;
-                details.push({ name: '智能功能加价', price: sp });
+                details.push({ name: `智能功能加价（镜柜${mirrorLength}m）`, price: sp });
                 if (document.getElementById('smartSwitch').checked) {
                     total += 100;
                     details.push({ name: '加套开关', price: 100 });
@@ -1186,6 +1230,18 @@
             document.getElementById('mirrorDrawerPriceText').textContent = dpText;
             document.getElementById('mirrorUnitText').textContent = getMaterialName(material) + ' ' + mirrorUnit + '元/米';
             document.getElementById('cabinetUnitText').textContent = getMaterialName(material) + ' ' + cabinetUnit + '元/米';
+
+            // 更新智能镜柜价格显示
+            const smartPrice = getSmartMirrorPrice(mirrorLength);
+            document.getElementById('smartLenText').textContent = mirrorLength;
+            document.getElementById('smartPriceText').textContent = smartPrice;
+            ['tier-1000','tier-1200','tier-1500','tier-over'].forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+            if (mirrorLength <= 1.0) document.getElementById('tier-1000').classList.add('active');
+            else if (mirrorLength <= 1.2) document.getElementById('tier-1200').classList.add('active');
+            else if (mirrorLength <= 1.5) document.getElementById('tier-1500').classList.add('active');
+            else document.getElementById('tier-over').classList.add('active');
         }
 
         function saveQuote() {
@@ -1336,7 +1392,6 @@
                 cb.closest('.checkbox-item') && cb.closest('.checkbox-item').classList.remove('active');
             });
             document.getElementById('smartOptions').style.display = 'none';
-            document.getElementById('smart-200').checked = true;
             Object.keys(quantities).forEach(key => { quantities[key] = 0; document.getElementById(key).textContent = '0'; });
             calculate();
             showToast('已重置');
