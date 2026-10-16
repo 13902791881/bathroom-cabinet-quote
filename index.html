@@ -188,7 +188,7 @@
             overflow: hidden;
             transition: max-height 0.4s;
         }
-        .accordion-item.active .accordion-body { max-height: 2500px; }
+        .accordion-item.active .accordion-body { max-height: none; }
         .accordion-content { padding: 0 20px 20px; }
 
         .icon-primary { background: #eff6ff; color: var(--accent); }
@@ -609,7 +609,6 @@
                 </div>
             </div>
 
-            <!-- 基础配置：材质选择 -->
             <div class="accordion-item active">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -621,7 +620,7 @@
                     </div>
                     <div class="accordion-arrow">▼</div>
                 </button>
-                <div class="accordion-body" style="max-height: 2000px;">
+                <div class="accordion-body">
                     <div class="accordion-content">
                         <div class="form-group">
                             <label class="form-label">材质选择</label>
@@ -644,7 +643,6 @@
                 </div>
             </div>
 
-            <!-- 主柜配置：紧跟材质选择下方 -->
             <div class="accordion-item active">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -656,7 +654,7 @@
                     </div>
                     <div class="accordion-arrow">▼</div>
                 </button>
-                <div class="accordion-body" style="max-height: 2500px;">
+                <div class="accordion-body">
                     <div class="accordion-content">
                         <div class="form-group">
                             <label class="form-label">主柜长度</label>
@@ -739,7 +737,6 @@
                 </div>
             </div>
 
-            <!-- 镜柜配置 -->
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -829,13 +826,16 @@
                             <div class="price-tier" id="tier-1500">≤ 1.5m（1500mm）：+200元</div>
                             <div class="price-tier" id="tier-over">> 1.5m：+250元</div>
                             <div class="current-price">当前镜柜 <span id="smartLenText">1.0</span>m，智能镜柜 +<span id="smartPriceText">120</span>元</div>
-                            <div class="checkbox-item" style="margin-top: 12px;" onclick="toggleCheckbox('smartSwitch')">
-                                <div class="checkbox-left">
-                                    <input type="checkbox" id="smartSwitch">
-                                    <span class="checkbox-check">✓</span>
-                                    <span class="checkbox-label">加套开关</span>
+                            <div class="quantity-row" style="margin-top: 12px; margin-bottom: 0;">
+                                <div class="quantity-info">
+                                    <div class="quantity-name">加功能</div>
+                                    <div class="quantity-price">100元/个，最多8个</div>
                                 </div>
-                                <span class="checkbox-price">+100元</span>
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" onclick="adjustQty('smartFunc', -1)">−</button>
+                                    <span class="quantity-value" id="smartFunc">0</span>
+                                    <button class="quantity-btn" onclick="adjustQty('smartFunc', 1)">+</button>
+                                </div>
                             </div>
                         </div>
                         <div class="divider"></div>
@@ -892,7 +892,6 @@
                 </div>
             </div>
 
-            <!-- 镜门与功能 -->
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -1015,7 +1014,8 @@
             lightPillar: 0, radarSensor: 0, handSensor: 0,
             beautyRack: 0, simpleDoor: 0,
             drawer: 0, cutCorner: 0, shelf: 0, basket: 0,
-            mirrorDrawer: 0, mirrorCutCorner: 0, mirrorShelf: 0
+            mirrorDrawer: 0, mirrorCutCorner: 0, mirrorShelf: 0,
+            smartFunc: 0
         };
 
         let currentDetails = [];
@@ -1050,11 +1050,17 @@
             const body = item.querySelector('.accordion-body');
             const isActive = item.classList.contains('active');
             if (isActive) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+                requestAnimationFrame(function() {
+                    body.style.maxHeight = '0';
+                });
                 item.classList.remove('active');
-                body.style.maxHeight = '0';
             } else {
                 item.classList.add('active');
                 body.style.maxHeight = body.scrollHeight + 'px';
+                setTimeout(function() {
+                    if (item.classList.contains('active')) body.style.maxHeight = 'none';
+                }, 420);
             }
         }
 
@@ -1067,11 +1073,16 @@
         function toggleSmartOptions() {
             const el = document.getElementById('smartOptions');
             el.style.display = document.getElementById('smartMirror').checked ? 'block' : 'none';
+            const body = el.closest('.accordion-body');
+            if (body && body.closest('.accordion-item').classList.contains('active')) {
+                body.style.maxHeight = 'none';
+            }
             calculate();
         }
 
         function adjustQty(key, delta) {
-            quantities[key] = Math.max(0, quantities[key] + delta);
+            const max = key === 'smartFunc' ? 8 : 99;
+            quantities[key] = Math.max(0, Math.min(max, quantities[key] + delta));
             document.getElementById(key).textContent = quantities[key];
             calculate();
         }
@@ -1102,7 +1113,6 @@
                 cabinetDepth: parseFloat(document.getElementById('cabinetDepth').value) || 50,
                 cabinetHeight: parseFloat(document.getElementById('cabinetHeight').value) || 50,
                 smartMirror: document.getElementById('smartMirror').checked,
-                smartSwitch: document.getElementById('smartSwitch').checked,
                 lightSlot: parseFloat(document.getElementById('lightSlot').value) || 0,
                 layerLight: document.getElementById('layerLight').checked,
                 foldMirror: document.getElementById('foldMirror').checked,
@@ -1128,7 +1138,6 @@
             document.getElementById('cabinetHeight').value = data.cabinetHeight || 50;
             document.getElementById('smartMirror').checked = data.smartMirror || false;
             document.getElementById('smartOptions').style.display = data.smartMirror ? 'block' : 'none';
-            document.getElementById('smartSwitch').checked = data.smartSwitch || false;
             document.getElementById('lightSlot').value = data.lightSlot || 0;
             document.getElementById('layerLight').checked = data.layerLight || false;
             document.getElementById('foldMirror').checked = data.foldMirror || false;
@@ -1139,7 +1148,8 @@
             if (data.quantities) {
                 Object.keys(data.quantities).forEach(key => {
                     quantities[key] = data.quantities[key];
-                    document.getElementById(key).textContent = quantities[key];
+                    const el = document.getElementById(key);
+                    if (el) el.textContent = quantities[key];
                 });
             }
             document.querySelectorAll('.checkbox-item input').forEach(cb => {
@@ -1182,9 +1192,10 @@
                 const sp = getSmartMirrorPrice(mirrorLength);
                 total += sp;
                 details.push({ name: `智能功能加价（镜柜${mirrorLength}m）`, price: sp });
-                if (document.getElementById('smartSwitch').checked) {
-                    total += 100;
-                    details.push({ name: '加套开关', price: 100 });
+                if (quantities.smartFunc > 0) {
+                    const p = quantities.smartFunc * 100;
+                    total += p;
+                    details.push({ name: `加功能（${quantities.smartFunc}个）`, price: p });
                 }
             }
 
@@ -1231,7 +1242,6 @@
             document.getElementById('mirrorUnitText').textContent = getMaterialName(material) + ' ' + mirrorUnit + '元/米';
             document.getElementById('cabinetUnitText').textContent = getMaterialName(material) + ' ' + cabinetUnit + '元/米';
 
-            // 更新智能镜柜价格显示
             const smartPrice = getSmartMirrorPrice(mirrorLength);
             document.getElementById('smartLenText').textContent = mirrorLength;
             document.getElementById('smartPriceText').textContent = smartPrice;
@@ -1386,7 +1396,7 @@
             document.getElementById('cabinetDepth').value = '50';
             document.getElementById('cabinetHeight').value = '50';
             ['lightSlot', 'aluFrameArea', 'smartMirrorLen', 'paintDoorArea'].forEach(id => document.getElementById(id).value = '0');
-            ['smartMirror', 'smartSwitch', 'layerLight', 'foldMirror', 'smartMirrorFrame'].forEach(id => {
+            ['smartMirror', 'layerLight', 'foldMirror', 'smartMirrorFrame'].forEach(id => {
                 const cb = document.getElementById(id);
                 cb.checked = false;
                 cb.closest('.checkbox-item') && cb.closest('.checkbox-item').classList.remove('active');
