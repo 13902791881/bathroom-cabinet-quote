@@ -567,13 +567,14 @@
                 </div>
             </div>
 
+            <!-- 基础配置：材质选择 -->
             <div class="accordion-item active">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
                         <div class="accordion-icon icon-primary">📐</div>
                         <div>
                             <div class="accordion-title">基础配置</div>
-                            <div class="accordion-subtitle">材质与尺寸</div>
+                            <div class="accordion-subtitle">选择材质</div>
                         </div>
                     </div>
                     <div class="accordion-arrow">▼</div>
@@ -597,18 +598,106 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主柜配置：紧跟材质选择下方 -->
+            <div class="accordion-item active">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-header-left">
+                        <div class="accordion-icon icon-cabinet">🗄️</div>
+                        <div>
+                            <div class="accordion-title">主柜配置</div>
+                            <div class="accordion-subtitle">尺寸、抽屉、拉篮等</div>
+                        </div>
+                    </div>
+                    <div class="accordion-arrow">▼</div>
+                </button>
+                <div class="accordion-body" style="max-height: 2500px;">
+                    <div class="accordion-content">
                         <div class="form-group">
-                            <label class="form-label">柜体长度</label>
+                            <label class="form-label">主柜长度</label>
                             <div class="input-suffix">
-                                <input type="number" class="form-input" id="length" placeholder="如：1.2" step="0.1" min="0.5" value="1">
+                                <input type="number" class="form-input" id="cabinetLength" placeholder="如：1.2" step="0.1" min="0.1" value="1">
                                 <span>米</span>
                             </div>
-                            <div class="form-hint">基础价 =（镜柜价 + 主柜价）× 长度</div>
+                            <div class="form-hint">主柜价 = 主柜单价 × 主柜长度（<span id="cabinetUnitText">SPC 400元/米</span>）</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">主柜宽度（深度）</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="cabinetDepth" value="50">
+                                <span>cm</span>
+                            </div>
+                            <div class="form-hint">50cm以内不加价，超出每10cm加收50元</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">主柜高度</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="cabinetHeight" value="50">
+                                <span>cm</span>
+                            </div>
+                            <div class="form-hint">50cm以内不加价，超出每10cm加收50元</div>
+                        </div>
+                        <div class="divider"></div>
+                        <label class="form-label">附加组件</label>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">抽屉</div>
+                                <div class="quantity-price" id="drawerPriceText">SPC/免漆 50元/个，全铝 80元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('drawer', -1)">−</button>
+                                <span class="quantity-value" id="drawer">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('drawer', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">切角</div>
+                                <div class="quantity-price">50元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('cutCorner', -1)">−</button>
+                                <span class="quantity-value" id="cutCorner">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('cutCorner', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">置物格</div>
+                                <div class="quantity-price">30元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('shelf', -1)">−</button>
+                                <span class="quantity-value" id="shelf">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('shelf', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">普通拉篮</div>
+                                <div class="quantity-price">200元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('basket', -1)">−</button>
+                                <span class="quantity-value" id="basket">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('basket', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label class="form-label">烤漆门板面积</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="paintDoorArea" value="0" min="0" step="0.1">
+                                <span>m² × 400元</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- 镜柜配置 -->
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -623,12 +712,63 @@
                 <div class="accordion-body">
                     <div class="accordion-content">
                         <div class="form-group">
+                            <label class="form-label">镜柜长度</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="mirrorLength" placeholder="如：1.2" step="0.1" min="0.1" value="1">
+                                <span>米</span>
+                            </div>
+                            <div class="form-hint">镜柜价 = 镜柜单价 × 镜柜长度（<span id="mirrorUnitText">SPC 350元/米</span>）</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">镜柜宽度（深度）</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="mirrorDepth" value="15">
+                                <span>cm</span>
+                            </div>
+                            <div class="form-hint">镜柜标准深度，仅供参考</div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">镜柜高度</label>
                             <div class="input-suffix">
                                 <input type="number" class="form-input" id="mirrorHeight" value="75">
                                 <span>cm</span>
                             </div>
                             <div class="form-hint">75cm以内不加价，超出每10cm加收50元</div>
+                        </div>
+                        <div class="divider"></div>
+                        <label class="form-label">镜柜附加组件</label>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">抽屉</div>
+                                <div class="quantity-price" id="mirrorDrawerPriceText">SPC/免漆 50元/个，全铝 80元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('mirrorDrawer', -1)">−</button>
+                                <span class="quantity-value" id="mirrorDrawer">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('mirrorDrawer', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">切角</div>
+                                <div class="quantity-price">50元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('mirrorCutCorner', -1)">−</button>
+                                <span class="quantity-value" id="mirrorCutCorner">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('mirrorCutCorner', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
+                                <div class="quantity-name">置物格</div>
+                                <div class="quantity-price">30元/个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('mirrorShelf', -1)">−</button>
+                                <span class="quantity-value" id="mirrorShelf">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('mirrorShelf', 1)">+</button>
+                            </div>
                         </div>
                         <div class="divider"></div>
                         <label class="form-label">智能镜柜</label>
@@ -640,7 +780,7 @@
                             <span class="checkbox-price">+150元/套</span>
                         </div>
                         <div class="sub-section" id="smartOptions" style="display: none;">
-                            <div class="sub-section-title">智能功能加价</div>
+                            <div class="sub-section-title">智能功能加价（按镜柜长度选择）</div>
                             <div class="radio-group">
                                 <div class="radio-option">
                                     <input type="radio" name="smartPrice" id="smart-200" value="200" checked>
@@ -716,6 +856,7 @@
                 </div>
             </div>
 
+            <!-- 镜门与功能 -->
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <div class="accordion-header-left">
@@ -782,92 +923,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">
-                    <div class="accordion-header-left">
-                        <div class="accordion-icon icon-cabinet">🗄️</div>
-                        <div>
-                            <div class="accordion-title">主柜配置</div>
-                            <div class="accordion-subtitle">尺寸、抽屉、拉篮等</div>
-                        </div>
-                    </div>
-                    <div class="accordion-arrow">▼</div>
-                </button>
-                <div class="accordion-body">
-                    <div class="accordion-content">
-                        <div class="form-group">
-                            <label class="form-label">主柜深度</label>
-                            <div class="input-suffix">
-                                <input type="number" class="form-input" id="cabinetDepth" value="50">
-                                <span>cm</span>
-                            </div>
-                            <div class="form-hint">50cm以内不加价，超出每10cm加收50元</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">主柜高度</label>
-                            <div class="input-suffix">
-                                <input type="number" class="form-input" id="cabinetHeight" value="50">
-                                <span>cm</span>
-                            </div>
-                            <div class="form-hint">50cm以内不加价，超出每10cm加收50元</div>
-                        </div>
-                        <div class="divider"></div>
-                        <label class="form-label">附加组件</label>
-                        <div class="quantity-row">
-                            <div class="quantity-info">
-                                <div class="quantity-name">抽屉</div>
-                                <div class="quantity-price" id="drawerPriceText">SPC/免漆 50元/个，全铝 80元/个</div>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="adjustQty('drawer', -1)">−</button>
-                                <span class="quantity-value" id="drawer">0</span>
-                                <button class="quantity-btn" onclick="adjustQty('drawer', 1)">+</button>
-                            </div>
-                        </div>
-                        <div class="quantity-row">
-                            <div class="quantity-info">
-                                <div class="quantity-name">切角</div>
-                                <div class="quantity-price">50元/个</div>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="adjustQty('cutCorner', -1)">−</button>
-                                <span class="quantity-value" id="cutCorner">0</span>
-                                <button class="quantity-btn" onclick="adjustQty('cutCorner', 1)">+</button>
-                            </div>
-                        </div>
-                        <div class="quantity-row">
-                            <div class="quantity-info">
-                                <div class="quantity-name">置物格</div>
-                                <div class="quantity-price">30元/个</div>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="adjustQty('shelf', -1)">−</button>
-                                <span class="quantity-value" id="shelf">0</span>
-                                <button class="quantity-btn" onclick="adjustQty('shelf', 1)">+</button>
-                            </div>
-                        </div>
-                        <div class="quantity-row">
-                            <div class="quantity-info">
-                                <div class="quantity-name">普通拉篮</div>
-                                <div class="quantity-price">200元/个</div>
-                            </div>
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="adjustQty('basket', -1)">−</button>
-                                <span class="quantity-value" id="basket">0</span>
-                                <button class="quantity-btn" onclick="adjustQty('basket', 1)">+</button>
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-top: 12px;">
-                            <label class="form-label">烤漆门板面积</label>
-                            <div class="input-suffix">
-                                <input type="number" class="form-input" id="paintDoorArea" value="0" min="0" step="0.1">
-                                <span>m² × 400元</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="tab-content" id="tab-history">
@@ -921,7 +976,8 @@
         const quantities = {
             lightPillar: 0, radarSensor: 0, handSensor: 0,
             beautyRack: 0, simpleDoor: 0,
-            drawer: 0, cutCorner: 0, shelf: 0, basket: 0
+            drawer: 0, cutCorner: 0, shelf: 0, basket: 0,
+            mirrorDrawer: 0, mirrorCutCorner: 0, mirrorShelf: 0
         };
 
         let currentDetails = [];
@@ -993,8 +1049,12 @@
                 customerPhone: document.getElementById('customerPhone').value,
                 customerNote: document.getElementById('customerNote').value,
                 material: document.querySelector('input[name="material"]:checked').value,
-                length: parseFloat(document.getElementById('length').value) || 1,
+                mirrorLength: parseFloat(document.getElementById('mirrorLength').value) || 1,
+                mirrorDepth: parseFloat(document.getElementById('mirrorDepth').value) || 15,
                 mirrorHeight: parseFloat(document.getElementById('mirrorHeight').value) || 75,
+                cabinetLength: parseFloat(document.getElementById('cabinetLength').value) || 1,
+                cabinetDepth: parseFloat(document.getElementById('cabinetDepth').value) || 50,
+                cabinetHeight: parseFloat(document.getElementById('cabinetHeight').value) || 50,
                 smartMirror: document.getElementById('smartMirror').checked,
                 smartPrice: parseInt(document.querySelector('input[name="smartPrice"]:checked').value),
                 smartSwitch: document.getElementById('smartSwitch').checked,
@@ -1004,8 +1064,6 @@
                 aluFrameArea: parseFloat(document.getElementById('aluFrameArea').value) || 0,
                 smartMirrorLen: parseFloat(document.getElementById('smartMirrorLen').value) || 0,
                 smartMirrorFrame: document.getElementById('smartMirrorFrame').checked,
-                cabinetDepth: parseFloat(document.getElementById('cabinetDepth').value) || 50,
-                cabinetHeight: parseFloat(document.getElementById('cabinetHeight').value) || 50,
                 paintDoorArea: parseFloat(document.getElementById('paintDoorArea').value) || 0,
                 quantities: { ...quantities }
             };
@@ -1016,40 +1074,50 @@
             document.getElementById('customerPhone').value = data.customerPhone || '';
             document.getElementById('customerNote').value = data.customerNote || '';
             document.querySelector(`input[name="material"][value="${data.material}"]`).checked = true;
-            document.getElementById('length').value = data.length;
-            document.getElementById('mirrorHeight').value = data.mirrorHeight;
-            document.getElementById('smartMirror').checked = data.smartMirror;
+            var legacyLen = data.length || 1;
+            document.getElementById('mirrorLength').value = data.mirrorLength || legacyLen;
+            document.getElementById('mirrorDepth').value = data.mirrorDepth || 15;
+            document.getElementById('mirrorHeight').value = data.mirrorHeight || 75;
+            document.getElementById('cabinetLength').value = data.cabinetLength || legacyLen;
+            document.getElementById('cabinetDepth').value = data.cabinetDepth || 50;
+            document.getElementById('cabinetHeight').value = data.cabinetHeight || 50;
+            document.getElementById('smartMirror').checked = data.smartMirror || false;
             document.getElementById('smartOptions').style.display = data.smartMirror ? 'block' : 'none';
-            document.querySelector(`input[name="smartPrice"][value="${data.smartPrice}"]`).checked = true;
-            document.getElementById('smartSwitch').checked = data.smartSwitch;
-            document.getElementById('lightSlot').value = data.lightSlot;
-            document.getElementById('layerLight').checked = data.layerLight;
-            document.getElementById('foldMirror').checked = data.foldMirror;
-            document.getElementById('aluFrameArea').value = data.aluFrameArea;
-            document.getElementById('smartMirrorLen').value = data.smartMirrorLen;
-            document.getElementById('smartMirrorFrame').checked = data.smartMirrorFrame;
-            document.getElementById('cabinetDepth').value = data.cabinetDepth;
-            document.getElementById('cabinetHeight').value = data.cabinetHeight;
-            document.getElementById('paintDoorArea').value = data.paintDoorArea;
-            Object.keys(data.quantities).forEach(key => {
-                quantities[key] = data.quantities[key];
-                document.getElementById(key).textContent = quantities[key];
-            });
+            document.querySelector(`input[name="smartPrice"][value="${data.smartPrice || 200}"]`).checked = true;
+            document.getElementById('smartSwitch').checked = data.smartSwitch || false;
+            document.getElementById('lightSlot').value = data.lightSlot || 0;
+            document.getElementById('layerLight').checked = data.layerLight || false;
+            document.getElementById('foldMirror').checked = data.foldMirror || false;
+            document.getElementById('aluFrameArea').value = data.aluFrameArea || 0;
+            document.getElementById('smartMirrorLen').value = data.smartMirrorLen || 0;
+            document.getElementById('smartMirrorFrame').checked = data.smartMirrorFrame || false;
+            document.getElementById('paintDoorArea').value = data.paintDoorArea || 0;
+            if (data.quantities) {
+                Object.keys(data.quantities).forEach(key => {
+                    quantities[key] = data.quantities[key];
+                    document.getElementById(key).textContent = quantities[key];
+                });
+            }
             document.querySelectorAll('.checkbox-item input').forEach(cb => {
-                cb.closest('.checkbox-item').classList.toggle('active', cb.checked);
+                cb.closest('.checkbox-item') && cb.closest('.checkbox-item').classList.toggle('active', cb.checked);
             });
             calculate();
         }
 
         function calculate() {
             const material = document.querySelector('input[name="material"]:checked').value;
-            const length = parseFloat(document.getElementById('length').value) || 1;
+            const mirrorLength = parseFloat(document.getElementById('mirrorLength').value) || 0;
+            const cabinetLength = parseFloat(document.getElementById('cabinetLength').value) || 0;
             let total = 0;
             let details = [];
 
-            const base = (basePrices[material].mirror + basePrices[material].cabinet) * length;
-            total += base;
-            details.push({ name: `基础价（${getMaterialName(material)} · ${length}m）`, price: base });
+            const mirrorUnit = basePrices[material].mirror;
+            const cabinetUnit = basePrices[material].cabinet;
+            const mirrorBase = mirrorUnit * mirrorLength;
+            const cabinetBase = cabinetUnit * cabinetLength;
+            total += mirrorBase + cabinetBase;
+            details.push({ name: `镜柜基础价（${getMaterialName(material)} ${mirrorUnit}元/米 × ${mirrorLength}m）`, price: mirrorBase });
+            details.push({ name: `主柜基础价（${getMaterialName(material)} ${cabinetUnit}元/米 × ${cabinetLength}m）`, price: cabinetBase });
 
             const mh = parseFloat(document.getElementById('mirrorHeight').value) || 75;
             if (mh > 75) {
@@ -1058,6 +1126,11 @@
                 total += p;
                 details.push({ name: `镜柜超高（${mh}cm）`, price: p });
             }
+
+            const drawerUnit = material === 'quanlv' ? 80 : 50;
+            if (quantities.mirrorDrawer > 0) { const p = quantities.mirrorDrawer * drawerUnit; total += p; details.push({ name: `镜柜抽屉（${quantities.mirrorDrawer}个）`, price: p }); }
+            if (quantities.mirrorCutCorner > 0) { const p = quantities.mirrorCutCorner * 50; total += p; details.push({ name: `镜柜切角（${quantities.mirrorCutCorner}个）`, price: p }); }
+            if (quantities.mirrorShelf > 0) { const p = quantities.mirrorShelf * 30; total += p; details.push({ name: `镜柜置物格（${quantities.mirrorShelf}个）`, price: p }); }
 
             if (document.getElementById('smartMirror').checked) {
                 total += 150;
@@ -1091,9 +1164,9 @@
             if (cd > 50) { const extra = Math.ceil((cd - 50) / 10); const p = extra * 50; total += p; details.push({ name: `主柜超深（${cd}cm）`, price: p }); }
             const ch = parseFloat(document.getElementById('cabinetHeight').value) || 50;
             if (ch > 50) { const extra = Math.ceil((ch - 50) / 10); const p = extra * 50; total += p; details.push({ name: `主柜超高（${ch}cm）`, price: p }); }
-            if (quantities.drawer > 0) { const up = material === 'quanlv' ? 80 : 50; const p = quantities.drawer * up; total += p; details.push({ name: `抽屉（${quantities.drawer}个）`, price: p }); }
-            if (quantities.cutCorner > 0) { const p = quantities.cutCorner * 50; total += p; details.push({ name: `切角（${quantities.cutCorner}个）`, price: p }); }
-            if (quantities.shelf > 0) { const p = quantities.shelf * 30; total += p; details.push({ name: `置物格（${quantities.shelf}个）`, price: p }); }
+            if (quantities.drawer > 0) { const p = quantities.drawer * drawerUnit; total += p; details.push({ name: `主柜抽屉（${quantities.drawer}个）`, price: p }); }
+            if (quantities.cutCorner > 0) { const p = quantities.cutCorner * 50; total += p; details.push({ name: `主柜切角（${quantities.cutCorner}个）`, price: p }); }
+            if (quantities.shelf > 0) { const p = quantities.shelf * 30; total += p; details.push({ name: `主柜置物格（${quantities.shelf}个）`, price: p }); }
             if (quantities.basket > 0) { const p = quantities.basket * 200; total += p; details.push({ name: `普通拉篮（${quantities.basket}个）`, price: p }); }
             const pd = parseFloat(document.getElementById('paintDoorArea').value) || 0;
             if (pd > 0) { const p = pd * 400; total += p; details.push({ name: `烤漆门板（${pd}m²）`, price: p }); }
@@ -1101,12 +1174,18 @@
             currentDetails = details;
             document.getElementById('totalPrice').textContent = total.toLocaleString();
             const summary = document.getElementById('resultSummary');
+            const lengthTag = mirrorLength === cabinetLength
+                ? `${getMaterialName(material)} · ${mirrorLength}m`
+                : `${getMaterialName(material)} · 镜${mirrorLength}m/柜${cabinetLength}m`;
             summary.innerHTML = `
-                <span class="result-tag">${getMaterialName(material)} · ${length}m</span>
-                ${details.length > 1 ? '<span class="result-tag">' + (details.length - 1) + '项附加</span>' : ''}
+                <span class="result-tag">${lengthTag}</span>
+                ${details.length > 2 ? '<span class="result-tag">' + (details.length - 2) + '项附加</span>' : ''}
             `;
             const dpText = material === 'quanlv' ? '全铝 80元/个' : 'SPC/免漆 50元/个';
             document.getElementById('drawerPriceText').textContent = dpText;
+            document.getElementById('mirrorDrawerPriceText').textContent = dpText;
+            document.getElementById('mirrorUnitText').textContent = getMaterialName(material) + ' ' + mirrorUnit + '元/米';
+            document.getElementById('cabinetUnitText').textContent = getMaterialName(material) + ' ' + cabinetUnit + '元/米';
         }
 
         function saveQuote() {
@@ -1138,7 +1217,7 @@
                     </div>
                     <div class="history-meta">
                         <span>${item.date}</span>
-                        <span>${getMaterialName(item.material)} · ${item.length}m</span>
+                        <span>${getMaterialName(item.material)} · 镜${item.mirrorLength || item.length || 1}m/柜${item.cabinetLength || item.length || 1}m</span>
                     </div>
                     <div class="history-actions">
                         <button class="history-btn primary" onclick="loadQuote(${index})">加载</button>
@@ -1176,7 +1255,13 @@
             if (data.customerName) text += `客户：${data.customerName}\n`;
             if (data.customerPhone) text += `电话：${data.customerPhone}\n`;
             if (data.customerNote) text += `备注：${data.customerNote}\n`;
-            text += `\n材质：${getMaterialName(data.material)}\n长度：${data.length}米\n\n【费用明细】\n`;
+            var mLen = data.mirrorLength || data.length || 1;
+            var cLen = data.cabinetLength || data.length || 1;
+            var mDep = data.mirrorDepth || 15;
+            var mHei = data.mirrorHeight || 75;
+            var cDep = data.cabinetDepth || 50;
+            var cHei = data.cabinetHeight || 50;
+            text += `\n材质：${getMaterialName(data.material)}\n镜柜：${mLen}米 × ${mDep}cm × ${mHei}cm\n主柜：${cLen}米 × ${cDep}cm × ${cHei}cm\n\n【费用明细】\n`;
             data.details.forEach(item => {
                 text += `${item.name}：¥${item.price.toLocaleString()}\n`;
             });
@@ -1194,7 +1279,8 @@
             if (data.customerNote) html += `<p>备注：${data.customerNote}</p>`;
             html += `<p>日期：${new Date().toLocaleString('zh-CN')}</p></div>`;
             html += `<div class="q-row"><span>材质</span><span>${getMaterialName(data.material)}</span></div>`;
-            html += `<div class="q-row"><span>长度</span><span>${data.length} 米</span></div>`;
+            html += `<div class="q-row"><span>镜柜</span><span>${data.mirrorLength}米 × ${data.mirrorDepth}cm × ${data.mirrorHeight}cm</span></div>`;
+            html += `<div class="q-row"><span>主柜</span><span>${data.cabinetLength}米 × ${data.cabinetDepth}cm × ${data.cabinetHeight}cm</span></div>`;
             html += '<div style="border-top:1px solid #e2e8f0; margin:10px 0; padding-top:10px;">';
             currentDetails.forEach(item => {
                 html += `<div class="q-row"><span>${item.name}</span><span>¥${item.price.toLocaleString()}</span></div>`;
@@ -1237,8 +1323,10 @@
             document.getElementById('customerPhone').value = '';
             document.getElementById('customerNote').value = '';
             document.getElementById('mat-spc').checked = true;
-            document.getElementById('length').value = '1';
+            document.getElementById('mirrorLength').value = '1';
+            document.getElementById('mirrorDepth').value = '15';
             document.getElementById('mirrorHeight').value = '75';
+            document.getElementById('cabinetLength').value = '1';
             document.getElementById('cabinetDepth').value = '50';
             document.getElementById('cabinetHeight').value = '50';
             ['lightSlot', 'aluFrameArea', 'smartMirrorLen', 'paintDoorArea'].forEach(id => document.getElementById(id).value = '0');
