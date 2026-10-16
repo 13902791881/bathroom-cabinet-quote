@@ -706,6 +706,25 @@
                         </div>
                         <div class="quantity-row">
                             <div class="quantity-info">
+                                <div class="quantity-name">加R角</div>
+                                <div class="quantity-price" id="rCornerPriceText">200元/个（R50mm），最多2个</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="adjustQty('rCorner', -1)">−</button>
+                                <span class="quantity-value" id="rCorner">0</span>
+                                <button class="quantity-btn" onclick="adjustQty('rCorner', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group" id="rCornerSizeGroup" style="display: none;">
+                            <label class="form-label">R角尺寸</label>
+                            <div class="input-suffix">
+                                <input type="number" class="form-input" id="rCornerSize" value="50" min="0" step="10">
+                                <span>mm</span>
+                            </div>
+                            <div class="form-hint">小于50mm按200元/个计算，每超10mm加100元（如R60=300元/个）</div>
+                        </div>
+                        <div class="quantity-row">
+                            <div class="quantity-info">
                                 <div class="quantity-name">置物格</div>
                                 <div class="quantity-price">30元/个</div>
                             </div>
@@ -1014,7 +1033,7 @@
             beautyRack: 0, simpleDoor: 0,
             drawer: 0, cutCorner: 0, shelf: 0, basket: 0,
             mirrorDrawer: 0, mirrorCutCorner: 0, mirrorShelf: 0,
-            smartFunc: 0
+            smartFunc: 0, rCorner: 0
         };
 
         let currentDetails = [];
@@ -1080,9 +1099,14 @@
         }
 
         function adjustQty(key, delta) {
-            const max = key === 'smartFunc' ? 8 : 99;
+            let max = 99;
+            if (key === 'smartFunc') max = 8;
+            if (key === 'rCorner') max = 2;
             quantities[key] = Math.max(0, Math.min(max, quantities[key] + delta));
             document.getElementById(key).textContent = quantities[key];
+            if (key === 'rCorner') {
+                document.getElementById('rCornerSizeGroup').style.display = quantities.rCorner > 0 ? 'block' : 'none';
+            }
             calculate();
         }
 
@@ -1097,6 +1121,11 @@
             if (mm <= 1200) return 150;
             if (mm <= 1500) return 200;
             return 250;
+        }
+
+        function getRCornerUnit(sizeMm) {
+            if (sizeMm <= 50) return 200;
+            return 200 + Math.ceil((sizeMm - 50) / 10) * 100;
         }
 
         function getFormData() {
@@ -1119,6 +1148,7 @@
                 smartMirrorLen: parseFloat(document.getElementById('smartMirrorLen').value) || 0,
                 smartMirrorFrame: document.getElementById('smartMirrorFrame').checked,
                 paintDoorArea: parseFloat(document.getElementById('paintDoorArea').value) || 0,
+                rCornerSize: parseFloat(document.getElementById('rCornerSize').value) || 50,
                 quantities: { ...quantities }
             };
         }
@@ -1144,6 +1174,7 @@
             document.getElementById('smartMirrorLen').value = data.smartMirrorLen || 0;
             document.getElementById('smartMirrorFrame').checked = data.smartMirrorFrame || false;
             document.getElementById('paintDoorArea').value = data.paintDoorArea || 0;
+            document.getElementById('rCornerSize').value = data.rCornerSize || 50;
             if (data.quantities) {
                 Object.keys(data.quantities).forEach(key => {
                     quantities[key] = data.quantities[key];
@@ -1151,6 +1182,7 @@
                     if (el) el.textContent = quantities[key];
                 });
             }
+            document.getElementById('rCornerSizeGroup').style.display = quantities.rCorner > 0 ? 'block' : 'none';
             document.querySelectorAll('.checkbox-item input').forEach(cb => {
                 cb.closest('.checkbox-item') && cb.closest('.checkbox-item').classList.toggle('active', cb.checked);
             });
@@ -1220,6 +1252,13 @@
             if (ch > 50) { const extra = Math.ceil((ch - 50) / 10); const p = extra * 50; total += p; details.push({ name: `主柜超高（${ch}cm）`, price: p }); }
             if (quantities.drawer > 0) { const p = quantities.drawer * drawerUnit; total += p; details.push({ name: `主柜抽屉（${quantities.drawer}个）`, price: p }); }
             if (quantities.cutCorner > 0) { const p = quantities.cutCorner * 50; total += p; details.push({ name: `主柜切角（${quantities.cutCorner}个）`, price: p }); }
+            const rs = parseFloat(document.getElementById('rCornerSize').value) || 50;
+            const rUnit = getRCornerUnit(rs);
+            if (quantities.rCorner > 0) {
+                const p = rUnit * quantities.rCorner;
+                total += p;
+                details.push({ name: `主柜R角（${quantities.rCorner}个，R${rs}mm）`, price: p });
+            }
             if (quantities.shelf > 0) { const p = quantities.shelf * 30; total += p; details.push({ name: `主柜置物格（${quantities.shelf}个）`, price: p }); }
             if (quantities.basket > 0) { const p = quantities.basket * 200; total += p; details.push({ name: `普通拉篮（${quantities.basket}个）`, price: p }); }
             const pd = parseFloat(document.getElementById('paintDoorArea').value) || 0;
@@ -1240,6 +1279,7 @@
             document.getElementById('mirrorDrawerPriceText').textContent = dpText;
             document.getElementById('mirrorUnitText').textContent = getMaterialName(material) + ' ' + mirrorUnit + '元/米';
             document.getElementById('cabinetUnitText').textContent = getMaterialName(material) + ' ' + cabinetUnit + '元/米';
+            document.getElementById('rCornerPriceText').textContent = `当前 ${rUnit}元/个（R${rs}mm），最多2个`;
 
             const smartPrice = getSmartMirrorPrice(mirrorLength);
             document.getElementById('smartLenText').textContent = mirrorLength;
@@ -1394,6 +1434,8 @@
             document.getElementById('cabinetLength').value = '1';
             document.getElementById('cabinetDepth').value = '50';
             document.getElementById('cabinetHeight').value = '50';
+            document.getElementById('rCornerSize').value = '50';
+            document.getElementById('rCornerSizeGroup').style.display = 'none';
             ['lightSlot', 'aluFrameArea', 'smartMirrorLen', 'paintDoorArea'].forEach(id => document.getElementById(id).value = '0');
             ['smartMirror', 'layerLight', 'foldMirror', 'smartMirrorFrame'].forEach(id => {
                 const cb = document.getElementById(id);
