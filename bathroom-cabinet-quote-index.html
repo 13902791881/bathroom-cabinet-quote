@@ -696,7 +696,7 @@
                         <div class="quantity-row">
                             <div class="quantity-info">
                                 <div class="quantity-name">切角</div>
-                                <div class="quantity-price">50元/个</div>
+                                <div class="quantity-price">0元/个</div>
                             </div>
                             <div class="quantity-control">
                                 <button class="quantity-btn" onclick="adjustQty('cutCorner', -1)">−</button>
@@ -820,7 +820,7 @@
                         <div class="quantity-row">
                             <div class="quantity-info">
                                 <div class="quantity-name">切角</div>
-                                <div class="quantity-price">50元/个</div>
+                                <div class="quantity-price">0元/个</div>
                             </div>
                             <div class="quantity-control">
                                 <button class="quantity-btn" onclick="adjustQty('mirrorCutCorner', -1)">−</button>
@@ -1241,7 +1241,7 @@
 
             const drawerUnit = material === 'quanlv' ? 80 : 50;
             if (quantities.mirrorDrawer > 0) { const p = quantities.mirrorDrawer * drawerUnit; total += p; details.push({ name: `镜柜抽屉（${quantities.mirrorDrawer}个）`, price: p }); }
-            if (quantities.mirrorCutCorner > 0) { const p = quantities.mirrorCutCorner * 50; total += p; details.push({ name: `镜柜切角（${quantities.mirrorCutCorner}个）`, price: p }); }
+            if (quantities.mirrorCutCorner > 0) { details.push({ name: `镜柜切角（${quantities.mirrorCutCorner}个，免费）`, price: 0 }); }
             if (quantities.mirrorShelf > 0) { const p = quantities.mirrorShelf * 30; total += p; details.push({ name: `镜柜置物格（${quantities.mirrorShelf}个）`, price: p }); }
 
             if (document.getElementById('smartMirror').checked) {
@@ -1292,7 +1292,7 @@
             const ch = parseFloat(document.getElementById('cabinetHeight').value) || 50;
             if (ch > 50) { const extra = Math.ceil((ch - 50) / 10); const p = extra * 50; total += p; details.push({ name: `主柜超高（${ch}cm）`, price: p }); }
             if (quantities.drawer > 0) { const p = quantities.drawer * drawerUnit; total += p; details.push({ name: `主柜抽屉（${quantities.drawer}个）`, price: p }); }
-            if (quantities.cutCorner > 0) { const p = quantities.cutCorner * 50; total += p; details.push({ name: `主柜切角（${quantities.cutCorner}个）`, price: p }); }
+            if (quantities.cutCorner > 0) { details.push({ name: `主柜切角（${quantities.cutCorner}个，免费）`, price: 0 }); }
             const rs = parseFloat(document.getElementById('rCornerSize').value) || 50;
             const rUnit = getRCornerUnit(rs);
             if (quantities.rCorner > 0) {
